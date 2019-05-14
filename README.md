@@ -98,6 +98,7 @@ Process finished with exit code 0
 # 更通用的构造函数和析构函数
 
 # 一般的成员函数
+this
 
 # 实现继承
 
@@ -106,3 +107,6 @@ Process finished with exit code 0
 # 多态
 
 # 静态成员变量
+
+# 后记
+example 目录下有一些编写的示例程序。其中包括一些常见的面向对象设计的例子的实现。你可以参考它们进行编程。
