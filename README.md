@@ -68,7 +68,7 @@ deconstruct_void(Animal)
 ### Animal 类的构造函数
 对于一个类，首先必要的两个成员函数就是构造函数和析构函数。首先我们来看一下最简单的构造函数写法。
 
-在这个面向对象实现中，构造函数的责任和面向对象语言中的构造函数不同，首先，在 C 语言中实现函数重载模式的代码十分复杂。因此这里的构造函数不会有传入参数，更不支持函数重载。对于对象内的数据初始化可以使用一般的设置函数替代。另外，这里构造函数的工作首先是要创造一个对象，然后将对象（实际上是结构体）内的函数指针赋值，这一步也可以称为函数绑定。正如你所看到的，`create_obj`可以用于对象的生成，其参数为类名称。
+在这个面向对象实现中，构造函数的责任和一般面向对象语言中的构造函数稍微不同，首先，在 C 语言中实现函数重载模式的代码十分复杂。因此这里的构造函数不会有传入参数，更不支持函数重载。对于对象内的数据初始化可以使用一般的设置函数替代。另外，这里构造函数的工作首先是要创造一个对象，然后将对象（实际上是结构体）内的函数指针赋值，这一步也可以称为函数绑定。正如你所看到的，`create_obj`可以用于对象的生成，其参数为类名称。
 
 ### Animal 类的析构函数
 似乎在这里并没有创建一个析构函数，实际上，`deconstruct_void(Animal)`的任务就是创建一个空的析构函数。后文会介绍如何创建一个正常的析构函数。
@@ -86,11 +86,14 @@ int main()
 {
     Animal a = new(Animal);
     a->say_hello();
+    del(Animal, a);
     return 0;
 }
 ```
 
-使用`new(<类名>)`即可创建一个对象。编译执行，可以发现成功打印了`Hello World!`。
+使用`new(<类名>)`即可创建一个对象。对于对象的删除，与一般面向对象语言有所不同的是，删除时需要指定删除的对象所属的类以调用相应的析构函数。
+
+编译执行，可以发现成功打印了`Hello World!`。
 
 ```
 Hello World!
@@ -98,6 +101,42 @@ Hello World!
 Process finished with exit code 0
 ```
 # 成员变量
+为了演示成员变量的使用，我们为 Animal 类添加一个属性，年龄`age`。
+修改`__Animal_content__`，添加`age`变量：
+
+```
+#define __Animal_content__ \
+void func(say_hello)(); \
+int age;
+```
+
+下面我们修改`main`函数来测试一下：
+
+```
+int main()
+{
+    Animal a = new(Animal);
+    printf("a: My age is %d\n", a->age);
+    a->age = 7;
+    printf("a: My age is %d\n", a->age);
+    Animal b = new(Animal);
+    b->age = 5;
+    printf("b: My age is %d\n", b->age);
+    del(Animal, a);
+    del(Animal, b);
+    return 0;
+}
+```
+
+运行一下：
+
+```
+a: My age is 0
+a: My age is 7
+b: My age is 5
+
+Process finished with exit code 0
+```
 
 # 更通用的构造函数和析构函数
 
