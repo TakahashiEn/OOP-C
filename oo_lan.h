@@ -32,9 +32,27 @@ declare_cons(class);
 
 #define func(func_name) (* func_name)
 
-#define create_obj(class) malloc(sizeof(_##class))
+static inline void* __create_obj(size_t size)
+{
+    void* new_obj = malloc(size);
+    memset(new_obj, 0, size);
+    return new_obj;
+}
+
+static inline void* __create_inher(void* ori, size_t size, size_t p_size)
+{
+    void* new_obj = realloc(ori, size);
+    memset(new_obj+p_size, 0, size-p_size);
+    return new_obj;
+}
+
+#define create_obj(class) \
+    __create_obj(sizeof(_##class))
+
+
 #define create_inher(parent_class, class) \
-    realloc(new(parent_class), sizeof(_##class))
+    __create_inher(new(parent_class), sizeof(_##class), sizeof(_##parent_class))
+
 
 #define class static
 
