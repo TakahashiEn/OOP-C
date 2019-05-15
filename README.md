@@ -279,10 +279,92 @@ void del_<类名>(<类名> <变量名>)
 
 
 # 实现继承
+继承是面向对象设计的一大特征。这一节我们我们介绍一下如何使用继承。
 
 ## 多层继承与多重继承
+我们暂时无法使用多重继承。不过对于一个好的面向对象设计而言，通常不会出现多重继承的情况。但是我们可以使用多层继承。
+
+## 编写 Dog 子类
+我们新建一个`Animal`的子类`Dog`，以说明继承的基本用法。
+
+想要继承`Animal`类，首先需要
+
+```
+#include "Animal.h"
+```
+
+同样我们需要声明`__Dog_content__`：
+
+```
+#define __Dog_content__ \
+__Animal_content__ \
+void func(bark)();
+
+class_declaration(Dog);
+```
+
+可以看到继承的方法就是使用父类对象的`__Animal_content__`宏定义。同时我们新加入了一个自己的方法`bark`。
+
+对于`bark`函数的实现如下：
+
+```
+void bark()
+{
+    printf("Bark.\n");
+}
+```
 
 ## 子类的构造函数和析构函数
+### 构造函数
+```
+Dog new_Dog()
+{
+    Dog new_cl = create_inher(Animal, Dog);
+    new_cl->bark = bark;
+
+    return new_cl;
+}
+```
+
+子类的构造函数使用`create_inher`创建子类对象，`create_inher`根据传入的子类和父类名生成对象，并自动调用父类的构造函数。
+
+## 覆盖父类方法
+可以通过重新绑定的方式来覆盖父类的方法。例如，我们希望复写父类的`say_hello`方法，如下：
+
+```
+void say_hello()
+{
+    printf("Bark bark.\n");
+}
+```
+
+利用重新绑定来进行覆盖：
+
+```
+new_cl->say_hello = say_hello;
+```
+
+```
+int main()
+{
+    Dog a = new(Dog);
+    a->bark();
+    a->say_hello();
+    del(Dog, a);
+    return 0;
+}
+```
+
+运行结果如下：
+
+```
+Create.
+Bark.
+Bark bark.
+
+Process finished with exit code 0
+```
+
 
 # 多态
 
