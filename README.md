@@ -367,6 +367,60 @@ Process finished with exit code 0
 
 
 # 多态
+也可以在代码中实现多态。举个例子：
+
+```
+int main()
+{
+    Animal a = new(Dog);
+    a->say_hello();
+    del(Dog, a);
+    a = new(Animal);
+    a->say_hello();
+    del(Animal, a);
+    return 0;
+}
+```
+
+运行结果如下：
+
+```
+Create.
+Bark bark.
+Create.
+Hello World!
+
+Process finished with exit code 0
+```
+
+可以看到，使用`Dog`类生成的对象赋值给`Animal`类的引用变量a之后，调用`a->say_hello`实际上调用的是`Dog`的`say_hello`方法。
+
+## 向上转型和向下转型
+您可以使用强制类型转换来进行向上转型和向下转型的操作。如下：
+
+```
+int main()
+{
+    Dog b = new(Dog);
+    Animal a = (Animal)b;
+    a->say_hello();
+    b = (Dog)a;
+    b->bark();
+    del(Dog, a);
+    return 0;
+}
+```
+
+输出如下：
+
+```
+Create.
+Bark bark.
+Bark.
+
+Process finished with exit code 0
+```
+
 
 # 静态成员变量
 尽管一般使用获取和设置函数来获得成员变量的值，
