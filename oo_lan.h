@@ -40,7 +40,7 @@ static inline void* __create_obj(size_t size)
     return new_obj;
 }
 
-static inline void* __create_inher(void* ori, size_t size, size_t p_size, void (*p_del)(void* obj))
+static inline void* __create_inher(void* ori, size_t size, size_t p_size, void (* p_del)(void* obj))
 {
     void* new_obj = realloc(ori, size);
     if (new_obj)
@@ -61,13 +61,20 @@ static inline void* __create_inher(void* ori, size_t size, size_t p_size, void (
 
 #define class static
 
+#define del_obj(obj) \
+do \
+{ \
+    if (obj) \
+        free(obj); \
+} while(0)
+
+
 #define deconstruct_void(class) \
 void del_##class(class obj) \
 { \
-    free(obj);\
+    del_obj(obj); \
 }
 
-#define del_obj(obj) free(obj)
 
 
 
