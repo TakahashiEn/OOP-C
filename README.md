@@ -423,7 +423,56 @@ Process finished with exit code 0
 
 
 # 静态成员变量
-尽管一般使用获取和设置函数来获得成员变量的值，
+静态成员变量的定义方式和普通的变量不同，相对于变量来说和函数更为相似。假设我们现在要为`Animal`添加一个静态成员`num`以记录现在存在的`Animal`数量，在创建对象时自动加一，在销毁对象时自动减一。
+
+首先在`__Animal_content__`中声明：
+
+```
+int static_member(num);
+```
+
+静态变量的声明需要使用`static_member`，但这里仅仅是一个引用而非变量本身。
+
+接下来在`Animal.c`中添加`num`变量：
+
+```
+class int num;
+```
+
+然后在构造函数中使用`static_init`绑定静态变量：
+
+```
+static_init(new_cl->num, num);
+```
+
+在构造函数和析构函数中分别添加加一和减一操作，编写主函数：
+
+```
+int main()
+{
+    Animal a = new(Animal);
+    Dog b = new(Dog);
+    printf("Now have %d animal.\n", static_get(a->num));
+    del(Animal, a);
+    printf("Now have %d animal.\n", static_get(a->num));
+    del(Dog, b);
+    return 0;
+}
+```
+
+尽管一般来说你应该设置额外的函数来获取`num`，不过出于演示目的这里使用`static_get`来获取静态变量的值。`static_get`实际上是解引用操作。你不能够直接使用引用来进行访问。
+
+运行结果如下：
+
+```
+Create.
+Create.
+Now have 2 animal.
+Now have 1 animal.
+
+Process finished with exit code 0
+```
+
 
 # 后记
 example 目录下有一些编写的示例程序。其中包括一些常见的面向对象设计的例子的实现。你可以参考它们进行编程。
