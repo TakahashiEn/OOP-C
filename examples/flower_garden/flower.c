@@ -4,7 +4,7 @@
 
 #include "flower.h"
 
-class int num_all = 0;
+class int num_all;
 
 class void show_name(flower this)
 {
@@ -36,7 +36,6 @@ flower new_flower()
     new_cl->show_name = show_name;
     static_init(new_cl->num_all, num_all);
     new_cl->get_num_all = get_num_all;
-    new_cl->name = NULL;
     num_all++;
 
     return new_cl;

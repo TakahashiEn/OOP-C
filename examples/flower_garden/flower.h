@@ -14,7 +14,7 @@ void func(bloom)(); \
 void func(show_name)(flower this); \
 void func(set_name)(flower this, char* name); \
 char* name; \
-int static_member num_all; \
+int static_member(num_all); \
 int func(get_num_all)();
 
 class_declaration(flower);

@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define static_member *
+#define static_member(name) (* name)
 #define static_init(obj_mem, real_mem) (obj_mem = &(real_mem))
 #define static_get(static_p) (*(static_p))
 
@@ -32,19 +32,49 @@ declare_cons(class);
 
 #define func(func_name) (* func_name)
 
-#define create_obj(class) malloc(sizeof(_##class))
+static inline void* __create_obj(size_t size)
+{
+    void* new_obj = malloc(size);
+    if (new_obj)
+        memset(new_obj, 0, size);
+    return new_obj;
+}
+
+static inline void* __create_inher(void* ori, size_t size, size_t p_size, void (* p_del)(void* obj))
+{
+    void* new_obj = realloc(ori, size);
+    if (new_obj)
+        memset(new_obj+p_size, 0, size-p_size);
+    else
+        p_del(ori);
+    return new_obj;
+}
+
+#define create_obj(class) \
+    __create_obj(sizeof(_##class))
+
+
 #define create_inher(parent_class, class) \
-    realloc(new(parent_class), sizeof(_##class))
+    __create_inher(new(parent_class), sizeof(_##class), sizeof(_##parent_class), (void(*)(void *))del_##parent_class)
+
+
 
 #define class static
+
+#define del_obj(obj) \
+do \
+{ \
+    if (obj) \
+        free(obj); \
+} while(0)
+
 
 #define deconstruct_void(class) \
 void del_##class(class obj) \
 { \
-    free(obj);\
+    del_obj(obj); \
 }
 
-#define del_obj(obj) free(obj)
 
 
 
