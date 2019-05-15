@@ -35,14 +35,18 @@ declare_cons(class);
 static inline void* __create_obj(size_t size)
 {
     void* new_obj = malloc(size);
-    memset(new_obj, 0, size);
+    if (new_obj)
+        memset(new_obj, 0, size);
     return new_obj;
 }
 
-static inline void* __create_inher(void* ori, size_t size, size_t p_size)
+static inline void* __create_inher(void* ori, size_t size, size_t p_size, void (*p_del)(void* obj))
 {
     void* new_obj = realloc(ori, size);
-    memset(new_obj+p_size, 0, size-p_size);
+    if (new_obj)
+        memset(new_obj+p_size, 0, size-p_size);
+    else
+        p_del(ori);
     return new_obj;
 }
 
@@ -51,7 +55,8 @@ static inline void* __create_inher(void* ori, size_t size, size_t p_size)
 
 
 #define create_inher(parent_class, class) \
-    __create_inher(new(parent_class), sizeof(_##class), sizeof(_##parent_class))
+    __create_inher(new(parent_class), sizeof(_##class), sizeof(_##parent_class), (void(*)(void *))del_##parent_class)
+
 
 
 #define class static
