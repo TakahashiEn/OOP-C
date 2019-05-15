@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define static_member *
+#define static_member(name) (* name)
 #define static_init(obj_mem, real_mem) (obj_mem = &(real_mem))
 #define static_get(static_p) (*(static_p))
 
