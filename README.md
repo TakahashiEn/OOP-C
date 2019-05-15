@@ -140,10 +140,75 @@ b: My age is 5
 Process finished with exit code 0
 ```
 
+# 一般的成员函数
+在实际的面向对象工程中，我们通常不直接使用对象中的成员变量，而是使用相应的设置和获取方法，这也被称为对属性的封装。
+
+我们添加两个方法，来实现对`age`的封装。方法`get_age`用于获取当前对象的年龄，方法`grow`用于为当前对象年龄加一。
+
+```
+#define __Animal_content__ \
+void func(say_hello)(); \
+void func(grow)(Animal this); \
+int func(get_age)(Animal this); \
+int age;
+```
+
+这是修改后的`__Animal_content__`，可以发现两个方法都有一个参数`this`，这个参数指向的是当前的对象。如果方法需要用到类中的成员变量，则需要传入这个参数。
+
+编写两个方法的实现：
+
+```
+class void grow(Animal this)
+{
+    this->age++;
+}
+
+class int get_age(Animal this)
+{
+    return this->age;
+}
+```
+
+将两个方法绑定到类中：
+
+```
+new_cl->get_age = get_age;
+new_cl->grow = grow;
+```
+
+修改`main`函数：
+
+```
+int main()
+{
+    Animal a = new(Animal);
+    printf("a: My age is %d\n", a->get_age(a));
+    a->grow(a);
+    printf("a: My age is %d\n", a->get_age(a));
+    Animal b = new(Animal);
+    b->grow(b);
+    b->grow(b);
+    printf("b: My age is %d\n", b->get_age(b));
+    del(Animal, a);
+    del(Animal, b);
+    return 0;
+}
+```
+
+可以看到调用两个方法时都要传入自身。编译运行：
+
+```
+a: My age is 0
+a: My age is 1
+b: My age is 2
+
+Process finished with exit code 0
+```
+
 # 更通用的构造函数和析构函数
 
-# 一般的成员函数
-this
+
+
 
 # 实现继承
 
